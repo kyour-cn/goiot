@@ -1,26 +1,27 @@
 #include <Arduino.h>
 #include "../lib/wifi/wifi.h"
 #include "ws.h"
-#include "../lib/store/store.h"
 
 void setup() {
-
-    const char* ssid = "70701";
 
     Serial.begin(115200);
     delay(500);
     Serial.println("Device Starting...");
 
-    Store cache = Store("test");
+    // 先加载上一次配网账号密码
+    WifiConfig *readConfigs = WifiTool::loadConfig();
+    if (strlen(readConfigs->ssid) > 0) {
+        Serial.println("ssid:" + String(readConfigs->ssid));
+        Serial.println("pwd:" + String(readConfigs->pwd));
 
-    cache.set("test", "123456");
-
-    String val = cache.get("test", "null");
-    Serial.println("Cache test success!"+ val);
-
-    bool ret = WifiTool::connect(ssid, "2653907035");
-    if (!ret) {
-        Serial.println("Connect failed!");
+        bool ret = WifiTool::connect(readConfigs->ssid, readConfigs->pwd);
+        if (!ret) {
+            // 连接失败, 重新配网
+            Serial.println("Connect failed!");
+            WifiTool::smartConfig(0);
+        }
+    } else {
+        // 重新配网
         WifiTool::smartConfig(0);
     }
 

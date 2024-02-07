@@ -9,17 +9,29 @@
 #else
 
 #include <ESP8266WiFi.h>
+#include <EEPROM.h>         //加载EEPROM的库
 
 #endif
 
-class WifiTool {
-private:
-public:
-    static bool connect(const char *ssid, const char *password, int timeout);
-    static bool connect(const char *ssid, const char *password);
-    static bool smartConfig(int timeout);
+struct WifiConfig {
+    char ssid[32];
+    char pwd[64];
 };
 
-void initWifi();
+class WifiTool {
+public:
+    static bool connect(const char *ssid, const char *password, int timeout);
+
+    static bool connect(const char *ssid, const char *password);
+
+    static bool smartConfig(int timeout);
+
+    // wifi连接配置
+    static void saveConfig(WifiConfig *config);
+
+    static WifiConfig *loadConfig();
+
+    static void clearConfig();
+};
 
 #endif //GOIOT_LITE_WIFI_H

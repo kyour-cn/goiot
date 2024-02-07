@@ -4,6 +4,53 @@
 
 #include "wifi.h"
 
+#define EEPROM_START 1024
+
+/*
+  保存参数到eeprom
+*/
+void WifiTool::saveConfig(WifiConfig *config)
+{
+    EEPROM.begin(EEPROM_START);
+    auto *p = (uint8_t*)(config);
+    for (int i = 0; i < sizeof(*config); i++) {
+        EEPROM.write(i, *(p + i));
+    }
+    EEPROM.commit();
+    // 释放内存
+    delete config;
+}
+
+/*
+   获取wifi账号密码信息
+*/
+WifiConfig* WifiTool::loadConfig()
+{
+    // 为变量请求内存
+    auto *pvalue  = new WifiConfig;
+    EEPROM.begin(EEPROM_START);
+    auto *p = (uint8_t*)(pvalue);
+    for (int i = 0; i < sizeof(*pvalue); i++) {
+        *(p + i) = EEPROM.read(i);
+    }
+    EEPROM.commit();
+    return pvalue;
+}
+
+/**
+   清空wifi账号和密码
+*/
+void WifiTool::clearConfig()
+{
+    EEPROM.begin(EEPROM_START);
+    // 这里为啥是96 ，因为在结构体声明的长度之和就是96
+    for (int i = 0; i < 96; i++) {
+        EEPROM.write(i, 0);
+    }
+    EEPROM.commit();
+}
+
+
 bool WifiTool::connect(const char *ssid, const char *password)
 {
     return connect(ssid, password, 20);
@@ -62,12 +109,17 @@ bool WifiTool::smartConfig(int timeout)
             Serial.println("SmartConfig Success");
             Serial.printf("SSID:%s\r\n", WiFi.SSID().c_str());
             Serial.printf("PSW:%s\r\n", WiFi.psk().c_str());
-//            Serial.print("IP Address: ");
-//            Serial.println(WiFi.localIP());
+            Serial.print("IP Address: ");
+            Serial.println(WiFi.localIP());
 
-            return WifiTool::connect(WiFi.SSID().c_str(), WiFi.psk().c_str());
+            // 保存账号密码
+            auto *config  = new WifiConfig;
+            strcpy(config->ssid, WiFi.SSID().c_str());
+            strcpy(config->pwd, WiFi.psk().c_str());
 
-//            return true;
+            WifiTool::saveConfig(config);
+
+            return WifiTool::connect(config->ssid, config->pwd);
         }
     }
     return false;
