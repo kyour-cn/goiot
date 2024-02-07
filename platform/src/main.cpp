@@ -1,12 +1,11 @@
 #include <Arduino.h>
-#include "wifi.h"
+#include "../lib/wifi/wifi.h"
 #include "ws.h"
 #include "../lib/store/store.h"
 
-//const char *ssid = WIFI_NAME;
-//const char *password = WIFI_PASSWORD;
-
 void setup() {
+
+    const char* ssid = "70701";
 
     Serial.begin(115200);
     delay(500);
@@ -19,7 +18,11 @@ void setup() {
     String val = cache.get("test", "null");
     Serial.println("Cache test success!"+ val);
 
-    initWifi();
+    bool ret = WifiTool::connect(ssid, "2653907035");
+    if (!ret) {
+        Serial.println("Connect failed!");
+        WifiTool::smartConfig(0);
+    }
 
     Serial.println("Initialization complete!");
     Serial.println("===================================");
