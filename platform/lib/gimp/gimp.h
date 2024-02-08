@@ -2,8 +2,8 @@
 // Created by kyour on 2024/2/8.
 //
 
-#ifndef PLATFORM_GIMP_H
-#define PLATFORM_GIMP_H
+#ifndef GOIOT_GIMP_H
+#define GOIOT_GIMP_H
 
 #include <map>
 #include <string>
@@ -14,6 +14,8 @@ public:
     std::string cmd;
     std::map<std::string, std::string> headers;
     std::string body;
+
+    Gimp() = default;
 
     void setCmd(std::string cmd);
 
@@ -39,4 +41,4 @@ public:
 
 };
 
-#endif //PLATFORM_GIMP_H
+#endif //GOIOT_GIMP_H

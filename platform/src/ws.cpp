@@ -3,6 +3,7 @@
 //
 
 #include "ws.h"
+#include "../lib/gimp/gimp.h"
 
 WebSocketsClient webSocket;
 
@@ -25,6 +26,19 @@ void initWs()
     Serial.println("Ws Connected");
 }
 
+void onWsConnect()
+{
+    // 初始化Gimp对象
+    Gimp data = Gimp();
+
+    // 发送心跳
+    data.setCmd("ONLINE");
+    data.setHeader("id", "4545151fdf15ddsd");
+    data.setHeader("mac", "AB1234567890");
+    data.setBody("1234567890");
+
+    webSocket.sendTXT(data.encode().c_str());
+}
 
 /**
  * ws事件监听
@@ -40,10 +54,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
             break;
         case WStype_CONNECTED:
             Serial.printf("[WSc] Connected to url: %s\n", payload);
-
-            // send message to server when Connected
-            webSocket.sendTXT("register device");
-//            captureVideo();
+            onWsConnect();
             break;
         case WStype_TEXT:
 
@@ -95,8 +106,12 @@ void wsLoop()
     if(time - 10000 > lastTime){
         lastTime = time;
         if(!wsIsConnected()) return;
+
         // 发送心跳
-        webSocket.sendTXT("ping");
+        Gimp ping = Gimp();
+        ping.setCmd("ping");
+
+        webSocket.sendTXT(ping.encode().c_str());
     }
 
     webSocket.loop();
