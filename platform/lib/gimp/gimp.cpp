@@ -37,7 +37,7 @@ std::string Gimp::getBody() {
 }
 
 // 将请求信息转换为字符串
-std::string Gimp::toString() {
+std::string Gimp::encode() {
     std::string msg = this->cmd;
 
     // 指令结束符
@@ -56,4 +56,30 @@ std::string Gimp::toString() {
     msg.append(this->body);
 
     return msg;
+}
+
+// 解析请求信息
+bool Gimp::parse(std::string data) {
+    std::istringstream iss(data);
+    std::string line;
+
+    // 读取指令
+    std::getline(iss, this->cmd);
+
+    this->headers.clear();
+    // 解析消息头(每行一个消息头，如果遇到空行，表示消息头结束)
+    while (std::getline(iss, line) && !line.empty()) {
+        size_t pos = line.find(':');
+        if (pos != std::string::npos) {
+            std::string key = line.substr(0, pos);
+            std::string value = line.substr(pos + 1);
+            this->headers[key] = value;
+        }
+    }
+
+    this->body = "";
+    // 后续的内容被视为消息体
+    std::getline(iss, this->body, '\0');
+
+    return true;
 }

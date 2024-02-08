@@ -7,6 +7,7 @@
 
 #include <map>
 #include <string>
+#include <sstream>
 
 class Gimp {
 public:
@@ -30,7 +31,11 @@ public:
 
     std::string getBody();
 
-    std::string toString();
+    // 封装消息数据用于发送
+    std::string encode();
+
+    // 解析消息数据
+    bool parse(std::string data);
 
 };
 
