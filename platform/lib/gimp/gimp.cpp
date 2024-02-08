@@ -40,6 +40,10 @@ std::string Gimp::getBody() {
 std::string Gimp::encode() {
     std::string msg = this->cmd;
 
+    if (this->headers.empty() && this->body.empty()) {
+        return msg;
+    }
+
     // 指令结束符
     msg += "\n";
 
@@ -50,10 +54,12 @@ std::string Gimp::encode() {
         msg += "\n";
     }
 
-    // 消息头结束符
-    msg += "\n";
+    if (this->body.empty()) {
+        return msg;
+    }
 
-    msg.append(this->body);
+    // 消息头结束符（形成空行），后面是消息体
+    msg += "\n" + this->body;
 
     return msg;
 }
