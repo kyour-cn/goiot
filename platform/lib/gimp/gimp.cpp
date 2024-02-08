@@ -48,10 +48,7 @@ std::string Gimp::encode() {
     msg += "\n";
 
     for (auto it = this->headers.begin(); it != this->headers.end(); ++it) {
-        msg += it->first;
-        msg += ":";
-        msg += it->second;
-        msg += "\n";
+        msg += it->first + ":" + it->second + "\n";
     }
 
     if (this->body.empty()) {
