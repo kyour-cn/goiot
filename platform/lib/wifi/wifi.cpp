@@ -50,10 +50,9 @@ void WifiTool::clearConfig()
     EEPROM.commit();
 }
 
-
 bool WifiTool::connect(const char *ssid, const char *password)
 {
-    return connect(ssid, password, 20);
+    return connect(ssid, password, 30);
 }
 
 bool WifiTool::connect(const char *ssid, const char *password, int timeout)
@@ -77,6 +76,9 @@ bool WifiTool::connect(const char *ssid, const char *password, int timeout)
             return false;
         }
     }
+
+    Serial.print("IP Address: ");
+    Serial.println(WiFi.localIP());
 
     return true;
 }
@@ -109,8 +111,6 @@ bool WifiTool::smartConfig(int timeout)
             Serial.println("SmartConfig Success");
             Serial.printf("SSID:%s\r\n", WiFi.SSID().c_str());
             Serial.printf("PSW:%s\r\n", WiFi.psk().c_str());
-            Serial.print("IP Address: ");
-            Serial.println(WiFi.localIP());
 
             // 保存账号密码
             auto *config  = new WifiConfig;
