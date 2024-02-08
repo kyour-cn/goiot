@@ -37,7 +37,7 @@ public:
     std::string encode();
 
     // 解析消息数据
-    bool parse(std::string data);
+    bool decode(std::string data);
 
 };
 

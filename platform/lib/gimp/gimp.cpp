@@ -65,7 +65,7 @@ std::string Gimp::encode() {
 }
 
 // 解析请求信息
-bool Gimp::parse(std::string data) {
+bool Gimp::decode(std::string data) {
     std::istringstream iss(data);
     std::string line;
 

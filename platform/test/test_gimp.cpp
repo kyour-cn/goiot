@@ -18,7 +18,7 @@ void test() {
     Gimp demo = Gimp();
 
     Serial.println("===================================");
-    demo.parse("cmd\ntest:1234567890\nhh:666\n\nbody:1234567890");
+    demo.decode("cmd\ntest:1234567890\nhh:666\n\nbody:1234567890");
     Serial.println("cmd\ntest:1234567890\nhh:666\n\nbody:1234567890");
     Serial.println(demo.getCmd().c_str());
     Serial.println(demo.getHeader("test").c_str());
@@ -27,7 +27,7 @@ void test() {
     Serial.println("===================================");
 
     Serial.println("===================================");
-    demo.parse("cmd2\n\nbodyaaa12\n34567890\naaa");
+    demo.decode("cmd2\n\nbodyaaa12\n34567890\naaa");
     Serial.println("cmd2\n\nbodyaaa12\n34567890\naaa");
     Serial.println(demo.getCmd().c_str());
     Serial.println(demo.getHeader("test2").c_str());
