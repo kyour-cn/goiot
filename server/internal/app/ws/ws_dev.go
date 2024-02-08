@@ -2,13 +2,11 @@ package ws
 
 import (
 	"fmt"
+	"github.com/gorilla/websocket"
 	"gourd/internal/app/ws/dev_service"
 	"log"
 	"net/http"
 	"strconv"
-	"sync"
-
-	"github.com/gorilla/websocket"
 )
 
 // 定义一个 websocket.Upgrader，用于升级 HTTP 连接为 websocket 连接
@@ -20,8 +18,6 @@ var upgrader = websocket.Upgrader{
 		return true
 	},
 }
-
-var mutex sync.Mutex
 
 // HandlerDev 定义一个 websocket 处理器函数
 func HandlerDev(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +37,7 @@ func HandlerDev(w http.ResponseWriter, r *http.Request) {
 	// 循环读取和写入数据
 	for {
 		// 读取数据
-		messageType, message, err := conn.ReadMessage()
+		_, message, err := conn.ReadMessage()
 		if err != nil {
 			break
 		}
@@ -49,12 +45,14 @@ func HandlerDev(w http.ResponseWriter, r *http.Request) {
 		// 将收到的数据交给业务处理函数处理
 		dev_service.MsgHandler(string(message), conn)
 
+		fmt.Println("设备收到:" + string(message))
+
 		// 写入数据
-		err = conn.WriteMessage(messageType, message)
-		if err != nil {
-			//log.Println(err)
-			break
-		}
+		//err = conn.WriteMessage(messageType, message)
+		//if err != nil {
+		//	//log.Println(err)
+		//	break
+		//}
 	}
 
 	dev_service.CloseConn(fd)
