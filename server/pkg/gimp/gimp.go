@@ -21,6 +21,9 @@ func (g *Gimp) GetCmd() string {
 }
 
 func (g *Gimp) SetHeader(key, value string) {
+	if g.headers == nil {
+		g.headers = make(map[string]string)
+	}
 	g.headers[key] = value
 }
 

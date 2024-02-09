@@ -25,7 +25,7 @@ func PushConn(conn *websocket.Conn) DeviceFd {
 	defer mutex.Unlock()
 
 	// fd最大值为1亿，将达到1亿则清零
-	if connID >= 10 { //100000000
+	if connID >= 100000000 {
 		connID = 0
 	}
 
