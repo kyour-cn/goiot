@@ -1,24 +1,24 @@
-package dev_service
+package device
 
 import (
 	"github.com/gorilla/websocket"
 	"sync"
 )
 
-type DeviceFd int32
+type Fd int32
 
-var clients map[DeviceFd]*websocket.Conn
+var clients map[Fd]*websocket.Conn
 var mutex sync.Mutex
-var connID DeviceFd
+var connID Fd
 
-func checkFdExist(fd DeviceFd) bool {
+func checkFdExist(fd Fd) bool {
 	_, ok := clients[fd]
 	return ok
 }
 
-func PushConn(conn *websocket.Conn) DeviceFd {
+func PushConn(conn *websocket.Conn) Fd {
 	if clients == nil {
-		clients = make(map[DeviceFd]*websocket.Conn)
+		clients = make(map[Fd]*websocket.Conn)
 	}
 
 	mutex.Lock()
@@ -41,7 +41,7 @@ func PushConn(conn *websocket.Conn) DeviceFd {
 	return connID
 }
 
-func CloseConn(fd DeviceFd) {
+func CloseConn(fd Fd) {
 	delete(clients, fd)
 	//fmt.Println("<<<", clients, fd)
 }

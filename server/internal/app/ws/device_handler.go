@@ -3,7 +3,7 @@ package ws
 import (
 	"fmt"
 	"github.com/gorilla/websocket"
-	"gourd/internal/app/ws/dev_service"
+	"gourd/internal/app/ws/device"
 	"log"
 	"net/http"
 	"strconv"
@@ -19,8 +19,8 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-// HandlerDev 定义一个 websocket 处理器函数
-func HandlerDev(w http.ResponseWriter, r *http.Request) {
+// DeviceHandler 定义一个 websocket 处理器函数
+func DeviceHandler(w http.ResponseWriter, r *http.Request) {
 	// 升级 HTTP 连接为 websocket 连接
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -30,7 +30,7 @@ func HandlerDev(w http.ResponseWriter, r *http.Request) {
 	// 关闭连接时执行
 	defer conn.Close()
 
-	fd := dev_service.PushConn(conn)
+	fd := device.PushConn(conn)
 
 	fmt.Println("设备连接:" + strconv.FormatInt(int64(fd), 10))
 
@@ -43,9 +43,14 @@ func HandlerDev(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// 将收到的数据交给业务处理函数处理
-		dev_service.MsgHandler(string(message), conn)
+		device.MessageHandler(string(message), conn)
 
-		fmt.Println("设备收到:" + string(message))
+		//fmt.Println("设备收到:" + string(message))
+		//
+		//hexStr := hex.EncodeToString(message)
+		//// 转换为大写
+		//upperHexStr := strings.ToUpper(hexStr)
+		//fmt.Println("设备发送HEX:" + upperHexStr)
 
 		// 写入数据
 		//err = conn.WriteMessage(messageType, message)
@@ -55,6 +60,6 @@ func HandlerDev(w http.ResponseWriter, r *http.Request) {
 		//}
 	}
 
-	dev_service.CloseConn(fd)
+	device.CloseConn(fd)
 	fmt.Println("设备断开:" + strconv.FormatInt(int64(fd), 10))
 }

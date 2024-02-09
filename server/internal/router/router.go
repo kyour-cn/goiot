@@ -53,7 +53,7 @@ func Register() {
 	})
 
 	// 注册设备Websocket链接
-	r.Get("/ws/dev", ws.HandlerDev)
+	r.Get("/ws/dev", ws.DeviceHandler)
 
 	// 注册api相关路由
 	apiGroup := chi.NewRouter().
