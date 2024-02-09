@@ -10,30 +10,28 @@ import (
 	"gorm.io/plugin/soft_delete"
 )
 
-const TableNameUser = "user"
+const TableNameProduct = "product"
 
-// User mapped from table <user>
-type User struct {
-	ID         int32                 `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	Nickname   string                `gorm:"column:nickname;not null;comment:显示昵称" json:"nickname"`                      // 显示昵称
-	Username   string                `gorm:"column:username;not null;comment:登录账号" json:"username"`                      // 登录账号
-	Password   string                `gorm:"column:password;not null;comment:登录密码" json:"password"`                      // 登录密码
+// Product mapped from table <product>
+type Product struct {
+	ID         int32                 `gorm:"column:id;primaryKey;autoIncrement:true;comment:产品id" json:"id"`             // 产品id
+	Name       string                `gorm:"column:name;not null;comment:产品名称" json:"name"`                              // 产品名称
 	CreateTime uint                  `gorm:"column:create_time;not null;autoCreateTime;comment:创建时间" json:"create_time"` // 创建时间
 	UpdateTime uint                  `gorm:"column:update_time;not null;autoUpdateTime;comment:更新时间" json:"update_time"` // 更新时间
 	DeleteTime soft_delete.DeletedAt `gorm:"column:delete_time;not null;comment:删除时间 0表示未删除" json:"delete_time"`         // 删除时间 0表示未删除
 }
 
 // MarshalBinary 支持json序列化
-func (m *User) MarshalBinary() (data []byte, err error) {
+func (m *Product) MarshalBinary() (data []byte, err error) {
 	return json.Marshal(m)
 }
 
 // UnmarshalBinary 支持json反序列化
-func (m *User) UnmarshalBinary(data []byte) error {
+func (m *Product) UnmarshalBinary(data []byte) error {
 	return json.Unmarshal(data, m)
 }
 
-// TableName User's table name
-func (*User) TableName() string {
-	return TableNameUser
+// TableName Product's table name
+func (*Product) TableName() string {
+	return TableNameProduct
 }
