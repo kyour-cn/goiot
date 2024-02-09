@@ -11,7 +11,7 @@
 void initWs();
 void wsLoop();
 void webSocketEvent(WStype_t type, uint8_t * payload, size_t length);
-void sendBin(uint8_t * payload, size_t length);
+void wsSendBin(uint8_t * payload, size_t length);
 bool wsIsConnected();
 
 #endif //GOIOT_LITE_WS_H
