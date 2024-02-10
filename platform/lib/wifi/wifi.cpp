@@ -9,11 +9,10 @@
 /*
   保存参数到eeprom
 */
-void WifiTool::saveConfig(WifiConfig *config)
-{
+void WifiTool::saveConfig(WifiConfig *config) {
     EEPROM.begin(EEPROM_START);
-    auto *p = (uint8_t*)(config);
-    for (int i = 0; i < sizeof(*config); i++) {
+    auto *p = (uint8_t *) (config);
+    for (unsigned int i = 0; i < sizeof(*config); i++) {
         EEPROM.write(i, *(p + i));
     }
     EEPROM.commit();
@@ -24,13 +23,12 @@ void WifiTool::saveConfig(WifiConfig *config)
 /*
    获取wifi账号密码信息
 */
-WifiConfig* WifiTool::loadConfig()
-{
+WifiConfig *WifiTool::loadConfig() {
     // 为变量请求内存
-    auto *pvalue  = new WifiConfig;
+    auto *pvalue = new WifiConfig;
     EEPROM.begin(EEPROM_START);
-    auto *p = (uint8_t*)(pvalue);
-    for (int i = 0; i < sizeof(*pvalue); i++) {
+    auto *p = (uint8_t *) (pvalue);
+    for (unsigned int i = 0; i < sizeof(*pvalue); i++) {
         *(p + i) = EEPROM.read(i);
     }
     EEPROM.commit();
@@ -40,8 +38,7 @@ WifiConfig* WifiTool::loadConfig()
 /**
    清空wifi账号和密码
 */
-void WifiTool::clearConfig()
-{
+void WifiTool::clearConfig() {
     EEPROM.begin(EEPROM_START);
     // 这里为啥是96 ，因为在结构体声明的长度之和就是96
     for (int i = 0; i < 96; i++) {
@@ -50,20 +47,19 @@ void WifiTool::clearConfig()
     EEPROM.commit();
 }
 
-bool WifiTool::connect(const char *ssid, const char *password)
-{
-    return connect(ssid, password, 30);
+bool WifiTool::connect(const char *ssid, const char *password) {
+    return WifiTool::connect(ssid, password, 30);
 }
 
-bool WifiTool::connect(const char *ssid, const char *password, int timeout)
-{
+bool WifiTool::connect(const char *ssid, const char *password, int timeout) {
     Serial.println("Connecting to WiFi");
 
-    WiFi.disconnect();
+//    WiFi.disconnect();
     WiFi.softAPdisconnect(true);
     WiFi.mode(WIFI_STA);
 
     WiFi.begin(ssid, password);
+    delay(10000);
 
     int count = 0;
 
@@ -86,8 +82,7 @@ bool WifiTool::connect(const char *ssid, const char *password, int timeout)
 /**
  * Airkiss一键配网
  */
-bool WifiTool::smartConfig(int timeout)
-{
+bool WifiTool::smartConfig(int timeout) {
     WiFi.mode(WIFI_STA);
     Serial.println("Wait for SmartConfig...");
     WiFi.beginSmartConfig();
@@ -99,7 +94,7 @@ bool WifiTool::smartConfig(int timeout)
         Serial.print(".");
         delay(1000);
         // 超时时间
-        if(timeout > 0) {
+        if (timeout > 0) {
             count++;
             if (count > timeout) {
                 WiFi.disconnect();
@@ -113,7 +108,7 @@ bool WifiTool::smartConfig(int timeout)
             Serial.printf("PSW:%s\r\n", WiFi.psk().c_str());
 
             // 保存账号密码
-            auto *config  = new WifiConfig;
+            auto *config = new WifiConfig;
             strcpy(config->ssid, WiFi.SSID().c_str());
             strcpy(config->pwd, WiFi.psk().c_str());
 
@@ -123,4 +118,8 @@ bool WifiTool::smartConfig(int timeout)
         }
     }
     return false;
+}
+
+String WifiTool::getMacAddress() {
+    return WiFi.macAddress();
 }

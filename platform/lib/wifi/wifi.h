@@ -32,6 +32,8 @@ public:
     static WifiConfig *loadConfig();
 
     static void clearConfig();
+
+    static String getMacAddress();
 };
 
 #endif //GOIOT_LITE_WIFI_H
