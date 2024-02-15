@@ -15,7 +15,7 @@ const TableNameDevice = "device"
 // Device mapped from table <device>
 type Device struct {
 	ID         int32                 `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	NodeID     string                `gorm:"column:node_id;not null;comment:设备标识id" json:"node_id"`                      // 设备标识id
+	DeviceKey  string                `gorm:"column:device_key;not null;comment:设备标识id" json:"device_key"`                // 设备标识id
 	Mac        string                `gorm:"column:mac;not null;comment:设备mac地址" json:"mac"`                             // 设备mac地址
 	ProductID  int32                 `gorm:"column:product_id;not null;comment:产品id" json:"product_id"`                  // 产品id
 	UserID     int32                 `gorm:"column:user_id;not null;comment:所属用户" json:"user_id"`                        // 所属用户

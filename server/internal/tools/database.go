@@ -4,10 +4,12 @@ import (
 	"errors"
 	"github.com/go-gourd/database"
 	"github.com/go-gourd/gourd/log"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gourd/internal/orm/query"
+	"strconv"
 	"time"
 )
 
@@ -54,4 +56,25 @@ func InitDatabase() error {
 	query.SetDefault(mysqlDb)
 
 	return nil
+}
+
+var redisConn *redis.Client
+
+// GetRedis 初始化redis
+func GetRedis() (client *redis.Client, err error) {
+	if redisConn != nil {
+		return redisConn, nil
+	}
+
+	dbConfig := database.GetConfig("redis")
+	db, err := strconv.Atoi(dbConfig.Database)
+
+	client = redis.NewClient(&redis.Options{
+		Addr:     dbConfig.Host + ":" + strconv.Itoa(dbConfig.Port),
+		Password: dbConfig.Pass,
+		DB:       db,
+	})
+	redisConn = client
+	//_, err = client.Ping().Result()
+	return client, nil
 }

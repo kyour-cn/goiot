@@ -28,7 +28,7 @@ func newDevice(db *gorm.DB, opts ...gen.DOOption) device {
 	tableName := _device.deviceDo.TableName()
 	_device.ALL = field.NewAsterisk(tableName)
 	_device.ID = field.NewInt32(tableName, "id")
-	_device.NodeID = field.NewString(tableName, "node_id")
+	_device.DeviceKey = field.NewString(tableName, "device_key")
 	_device.Mac = field.NewString(tableName, "mac")
 	_device.ProductID = field.NewInt32(tableName, "product_id")
 	_device.UserID = field.NewInt32(tableName, "user_id")
@@ -48,7 +48,7 @@ type device struct {
 
 	ALL        field.Asterisk
 	ID         field.Int32
-	NodeID     field.String // 设备标识id
+	DeviceKey  field.String // 设备标识id
 	Mac        field.String // 设备mac地址
 	ProductID  field.Int32  // 产品id
 	UserID     field.Int32  // 所属用户
@@ -74,7 +74,7 @@ func (d device) As(alias string) *device {
 func (d *device) updateTableName(table string) *device {
 	d.ALL = field.NewAsterisk(table)
 	d.ID = field.NewInt32(table, "id")
-	d.NodeID = field.NewString(table, "node_id")
+	d.DeviceKey = field.NewString(table, "device_key")
 	d.Mac = field.NewString(table, "mac")
 	d.ProductID = field.NewInt32(table, "product_id")
 	d.UserID = field.NewInt32(table, "user_id")
@@ -101,7 +101,7 @@ func (d *device) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 func (d *device) fillFieldMap() {
 	d.fieldMap = make(map[string]field.Expr, 10)
 	d.fieldMap["id"] = d.ID
-	d.fieldMap["node_id"] = d.NodeID
+	d.fieldMap["device_key"] = d.DeviceKey
 	d.fieldMap["mac"] = d.Mac
 	d.fieldMap["product_id"] = d.ProductID
 	d.fieldMap["user_id"] = d.UserID

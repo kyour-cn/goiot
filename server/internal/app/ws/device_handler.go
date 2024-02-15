@@ -46,7 +46,7 @@ func DeviceHandler(w http.ResponseWriter, r *http.Request) {
 		device.MessageHandler(string(message), conn)
 
 		//fmt.Println("设备收到:" + string(message))
-		//
+
 		//hexStr := hex.EncodeToString(message)
 		//// 转换为大写
 		//upperHexStr := strings.ToUpper(hexStr)
