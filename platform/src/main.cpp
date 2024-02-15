@@ -8,8 +8,8 @@ void setup() {
     delay(500);
     Serial.println("Device Starting...");
 
-    auto mac = WifiTool::getMacAddress();
-    Serial.println("MAC:" + mac);
+//    auto mac = WifiTool::getMacAddress();
+//    Serial.println("MAC:" + mac);
 
     // 先加载上一次配网账号密码
     WifiConfig *readConfigs = WifiTool::loadConfig();

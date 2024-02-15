@@ -1,9 +1,7 @@
-//
-// Created by kyour on 2024/2/6.
-//
-
 #include "ws.h"
 #include "../lib/gimp/gimp.h"
+#include "config.h"
+#include "wifi.h"
 
 WebSocketsClient webSocket;
 
@@ -11,7 +9,7 @@ void initWs() {
     Serial.println("Connecting to Ws");
 
     // server address, port and URL
-    webSocket.begin("192.168.1.100", 8888, "/ws/dev");
+    webSocket.begin(GOIOT_WS_SERVER, GOIOT_WS_PORT, GOIOT_WS_URL);
 
     // event handler
     webSocket.onEvent(webSocketEvent);
@@ -31,26 +29,37 @@ void onWsConnect() {
     // 初始化Gimp对象
     Gimp data = Gimp();
 
+    String mac = WifiTool::getMacAddress();
+
     // 发送心跳
-    data.setCmd("ONLINE");
-    data.setHeader("id", "4545151fdf15ddsd");
-    data.setHeader("mac", "AB1234567890");
-
-    char bin1[] = {0x1A, 0x23, 0x45, 0x67, 0x68, 0x0A, 0x0A, 0x0A};
-
-    // 将bin1转为字符串
-    std::string hex2bin = (std::string) bin1;
-
-    data.setBody("12测试中文34567890" + hex2bin + "hhh=111");
+    data.setCmd("online");
+    data.setHeader("device_key", GOIOT_DEVICE_KEY);
+    data.setHeader("secret", GOIOT_DEVICE_SECRET);
+    data.setHeader("product_key", GOIOT_PRODUCT_KEY);
+    data.setHeader("mac", mac.c_str());
 
     webSocket.sendTXT(data.encode().c_str());
 
-//    auto bin = data.encode();
-//    webSocket.sendBIN((uint8_t * )bin.c_str(), bin.length());
+//    auto binData = data.encode();
+//    webSocket.sendBIN((uint8_t * )binData.c_str(), binData.length());
 }
 
-void onWsMessage(char *message) {
-    Serial.println(message);
+/**
+ * ws收到消息回调
+ * @param message
+ */
+void onWsMessage(const char *message) {
+//    Serial.println(message);
+    auto data = Gimp();
+    data.decode(message);
+
+    if(data.cmd == "pong") {
+        return;
+    }else if (data.cmd == "online") {
+    Serial.println("Device online successful!");
+//        data.setCmd("pong");
+//        webSocket.sendTXT(data.encode().c_str());
+    }
 }
 
 /**
@@ -73,7 +82,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
 
             onWsMessage((char *) payload);
 
-            Serial.printf("[WSc] get text: %s\n", payload);
+//            Serial.printf("[WSc] get text: %s\n", payload);
 
             break;
         case WStype_BIN:
