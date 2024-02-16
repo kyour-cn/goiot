@@ -1,7 +1,7 @@
 #include "ws.h"
 #include "../lib/gimp/gimp.h"
 #include "config.h"
-#include "wifi.h"
+#include "wifi_tool.h"
 
 WebSocketsClient webSocket;
 

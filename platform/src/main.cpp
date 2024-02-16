@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "../lib/wifi/wifi.h"
+#include "wifi_tool.h"
 #include "ws.h"
 
 void setup() {

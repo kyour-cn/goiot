@@ -2,7 +2,7 @@
 // Created by kyour on 2024/2/6.
 //
 
-#include "wifi.h"
+#include "wifi_tool.h"
 
 #define EEPROM_START 1024
 
