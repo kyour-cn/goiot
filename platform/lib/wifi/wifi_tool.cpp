@@ -68,7 +68,6 @@ bool WifiTool::connect(const char *ssid, const char *password, int timeout) {
         delay(1000);
         count++;
         if (count > timeout) {
-            WiFi.disconnect();
             return false;
         }
     }
@@ -97,7 +96,6 @@ bool WifiTool::smartConfig(int timeout) {
         if (timeout > 0) {
             count++;
             if (count > timeout) {
-                WiFi.disconnect();
                 return false;
             }
         }
