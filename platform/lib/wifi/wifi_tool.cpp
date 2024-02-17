@@ -1,7 +1,3 @@
-//
-// Created by kyour on 2024/2/6.
-//
-
 #include "wifi_tool.h"
 
 #define EEPROM_START 1024
@@ -59,7 +55,6 @@ bool WifiTool::connect(const char *ssid, const char *password, int timeout) {
     WiFi.mode(WIFI_STA);
 
     WiFi.begin(ssid, password);
-    delay(10000);
 
     int count = 0;
 

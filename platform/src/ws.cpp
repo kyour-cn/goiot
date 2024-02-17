@@ -1,5 +1,5 @@
 #include "ws.h"
-#include "../lib/gimp/gimp.h"
+#include "gimp.h"
 #include "config.h"
 #include "wifi_tool.h"
 

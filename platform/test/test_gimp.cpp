@@ -1,7 +1,7 @@
 //
 // Created by kyour on 2024/2/8.
 //
-#include "../lib/gimp/gimp.h"
+#include "gimp.h"
 #include <Arduino.h>
 
 void test() {
