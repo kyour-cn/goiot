@@ -7,8 +7,9 @@ import (
 	"time"
 )
 
-// Remember 从缓存中获取数据，如果不存在则从数据库中获取
-func Remember[T any](key string, ttl int, getDataFunc func() (*T, error)) (*T, error) {
+// Remember 从缓存中获取数据，如果不存在则从数据库中获取数
+// 数据回调函数的返回值必须是支持json序列化的结构体
+func Remember[T any](key string, ttl int, dataCallback func() (*T, error)) (*T, error) {
 
 	redis, err := tools.GetRedis()
 	if err != nil {
@@ -29,7 +30,7 @@ func Remember[T any](key string, ttl int, getDataFunc func() (*T, error)) (*T, e
 	}
 
 	// If the value doesn't exist in the cache, call the getDataFunc to fetch the value
-	value2, err := getDataFunc()
+	value2, err := dataCallback()
 	if err != nil {
 		return nil, err
 	}
