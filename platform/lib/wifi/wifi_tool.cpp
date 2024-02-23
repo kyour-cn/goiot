@@ -67,7 +67,7 @@ bool WifiTool::connect(const char *ssid, const char *password, int timeout) {
         }
     }
 
-    Serial.print("IP Address: ");
+    Serial.print("\nIP Address: ");
     Serial.println(WiFi.localIP());
 
     return true;
@@ -79,13 +79,38 @@ bool WifiTool::connect(const char *ssid, const char *password, int timeout) {
 bool WifiTool::smartConfig(int timeout) {
     WiFi.mode(WIFI_STA);
     Serial.println("Wait for SmartConfig...");
-    WiFi.beginSmartConfig();
+    WiFi.beginSmartConfig(SC_TYPE_ESPTOUCH_AIRKISS);
 
     int count = 0;
+
+    while (!WiFi.smartConfigDone()) {
+        Serial.print(".");
+
+        delay(1000);
+        // 超时时间
+        if (timeout > 0) {
+            count++;
+            if (count > timeout) {
+                break;
+            }
+        }
+    }
+
+    Serial.println("\nSmartConfig Success");
+    Serial.printf("SSID:%s\n", WiFi.SSID().c_str());
+    Serial.printf("PSW:%s\n", WiFi.psk().c_str());
+
+    // 保存账号密码
+    auto *config = new WifiConfig;
+    strcpy(config->ssid, WiFi.SSID().c_str());
+    strcpy(config->pwd, WiFi.psk().c_str());
+
+    WifiTool::saveConfig(config);
 
     while (WiFi.status() != WL_CONNECTED) {
 
         Serial.print(".");
+
         delay(1000);
         // 超时时间
         if (timeout > 0) {
@@ -94,23 +119,8 @@ bool WifiTool::smartConfig(int timeout) {
                 return false;
             }
         }
-
-        if (WiFi.smartConfigDone()) {
-            Serial.println("SmartConfig Success");
-            Serial.printf("SSID:%s\r\n", WiFi.SSID().c_str());
-            Serial.printf("PSW:%s\r\n", WiFi.psk().c_str());
-
-            // 保存账号密码
-            auto *config = new WifiConfig;
-            strcpy(config->ssid, WiFi.SSID().c_str());
-            strcpy(config->pwd, WiFi.psk().c_str());
-
-            WifiTool::saveConfig(config);
-
-            return WifiTool::connect(config->ssid, config->pwd);
-        }
     }
-    return false;
+    return true;
 }
 
 String WifiTool::getMacAddress() {
