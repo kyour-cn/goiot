@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "wifi_tool.h"
+#include "mqtt.h"
 
 void setup() {
 
@@ -29,6 +30,8 @@ void setup() {
 
     Serial.println("Initialization complete!");
     Serial.println("===================================");
+
+    initMqtt();
 
 }
 

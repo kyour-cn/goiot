@@ -3,6 +3,9 @@
 #define PLATFORM_CONFIG_H
 
 // 服务器信息
+const char *GOIOT_WS_SERVER = "192.168.1.26";
+const int GOIOT_WS_PORT = 8888;
+const char *GOIOT_WS_URL = "/ws/dev";
 
 // 设备KEY（设备在平台的唯一码）
 const char *GOIOT_DEVICE_KEY = "test_device_01";
