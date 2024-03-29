@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "wifi_tool.h"
-#include "ws.h"
 
 void setup() {
 
@@ -31,12 +30,9 @@ void setup() {
     Serial.println("Initialization complete!");
     Serial.println("===================================");
 
-    initWs();
-
 }
 
 void loop() {
-    wsLoop();
 //    delay(1000);                  // 留时间给蓝牙缓冲
 //    Serial.println("loop!");
 }
