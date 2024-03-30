@@ -1,6 +1,3 @@
-//
-// Created by kyour on 2024/3/29.
-//
 
 #ifndef PLATFORM_MQTT_H
 #define PLATFORM_MQTT_H

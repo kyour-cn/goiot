@@ -1,6 +1,3 @@
-//
-// Created by kyour on 2024/3/29.
-//
 
 #include "mqtt.h"
 
@@ -12,16 +9,24 @@ void initMqtt() {
     mqttClient.enableDebuggingMessages();
 
     mqttClient.setURI(GOIOT_MQTT_SERVER, GOIOT_MQTT_USER, GOIOT_MQTT_PASS);
+    mqttClient.setMqttClientName(GOIOT_DEVICE_KEY);
     mqttClient.enableLastWillMessage((std::string("device/office/") + GOIOT_DEVICE_KEY).c_str(), "I am going offline");
     mqttClient.setKeepAlive(30);
     mqttClient.loopStart();
 
 }
 
-//int pubCount = 0;
+
+// 上次心跳时间
+unsigned long lastHeartbeat = 0;
 
 void mqttLoop()
 {
+    if (millis() - lastHeartbeat > 20000) {
+        lastHeartbeat = millis();
+        const std::string topic = std::string("device/ping/") + GOIOT_DEVICE_KEY + "/ping";
+        mqttClient.publish(topic.c_str(), std::to_string(lastHeartbeat).c_str(), 0, false);
+    }
 //    String msg = "Hello: " + String(pubCount++);
 //
 //    const std::string topic = std::string("device/ping/") + GOIOT_DEVICE_KEY + "/online";
