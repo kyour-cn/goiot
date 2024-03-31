@@ -1,7 +1,7 @@
 #include "config.h"
 
 // 在这里提供全局变量的定义
-const char *GOIOT_MQTT_SERVER = "mqtt://192.168.1.123:1883";
+const char *GOIOT_MQTT_SERVER = "mqtt://1.95.11.154:1883";
 const char *GOIOT_MQTT_USER = "test";
 const char *GOIOT_MQTT_PASS = "test123";
 // 心跳发送间隔
