@@ -4,7 +4,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-gourd/gourd/config"
 	apiRoute "gourd/internal/app/api/route"
-	"gourd/internal/app/ws"
 	"net/http"
 	"os"
 )
@@ -51,9 +50,6 @@ func Register() {
 		w.WriteHeader(404)
 		_, _ = w.Write([]byte("404 not found."))
 	})
-
-	// 注册设备Websocket链接
-	r.Get("/ws/dev", ws.DeviceHandler)
 
 	// 注册api相关路由
 	apiGroup := chi.NewRouter().
