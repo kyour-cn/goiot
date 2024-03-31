@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "wifi_tool.h"
 #include "mqtt/mqtt.h"
+#include "cam/cam.h"
 
 void setup() {
 
@@ -27,16 +28,21 @@ void setup() {
         // 重新配网
         WifiTool::smartConfig(0);
     }
+    delay(1000);
+
+    initMqtt();
+    delay(1000);
+
+    initCam();
+    delay(1000);
 
     Serial.println("Initialization complete!");
     Serial.println("===================================");
-
-    initMqtt();
 
 }
 
 void loop() {
     mqttLoop();
-//    delay(1000);                  // 留时间给蓝牙缓冲
-//    Serial.println("loop!");
+
+    camLoop();
 }

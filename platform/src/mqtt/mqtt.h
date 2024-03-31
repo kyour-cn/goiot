@@ -5,3 +5,4 @@
 
 void initMqtt();
 void mqttLoop();
+bool mqttPublish(const String &topic, const String &payload, int qos, bool retain);

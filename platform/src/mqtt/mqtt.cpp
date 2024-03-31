@@ -24,11 +24,16 @@ unsigned long lastHeartbeat = 0;
 void mqttLoop() {
     unsigned long millisVal = millis();
     // 发送心跳
-    if (lastHeartbeat < millisVal || millisVal - lastHeartbeat > GOIOT_MQTT_HEARTBEAT_INTERVAL) {
+    if (millisVal - lastHeartbeat > GOIOT_MQTT_HEARTBEAT_INTERVAL || lastHeartbeat / 2 > millisVal) {
         lastHeartbeat = millisVal;
         const std::string topic = std::string("device/basic/ping/") + GOIOT_DEVICE_KEY;
         mqttClient.publish(topic.c_str(), std::to_string(lastHeartbeat).c_str(), 0, false);
     }
+}
+
+// 发布消息
+bool mqttPublish(const String &topic, const String &payload, int qos, bool retain) {
+    return mqttClient.publish(topic, payload, qos, retain);
 }
 
 /**
