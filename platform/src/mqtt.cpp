@@ -16,13 +16,13 @@ void initMqtt() {
 
 }
 
-
 // 上次心跳时间
 unsigned long lastHeartbeat = 0;
 
 void mqttLoop()
 {
-    if (millis() - lastHeartbeat > 20000) {
+    // 发送心跳
+    if (millis() - lastHeartbeat > GOIOT_MQTT_HEARTBEAT_INTERVAL) {
         lastHeartbeat = millis();
         const std::string topic = std::string("device/ping/") + GOIOT_DEVICE_KEY + "/ping";
         mqttClient.publish(topic.c_str(), std::to_string(lastHeartbeat).c_str(), 0, false);
@@ -41,6 +41,7 @@ void mqttLoop()
  */
 void onConnectionEstablishedCallback(esp_mqtt_client_handle_t client)
 {
+    // 订阅主题
     const std::string subtopic = std::string("device/message/") + GOIOT_DEVICE_KEY + "/#";
     if (mqttClient.isMyTurn(client)) // can be omitted if only one client
     {
