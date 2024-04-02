@@ -16,7 +16,6 @@ void camLoop() {
         lastSendTime = millisVal;
 
         Serial.println("sendCamera");
-
         sendCamera();
     }
 }
@@ -27,16 +26,8 @@ void sendCamera() {
     // 发送设备图像
     camera_fb_t * fb = esp_camera_fb_get();
     if (fb) {
-
         const String topic = String("device/up/image/") + GOIOT_DEVICE_KEY;
-        bool res = mqttPublishBinary(topic.c_str(), fb->buf, fb->len, 1, false);
-
-//        String imageData((char*)fb->buf, fb->len);
-//
-//        Serial.println("imageData = " + imageData);
-//
-//        const String topic = String("device/up/image/") + GOIOT_DEVICE_KEY;
-//        bool res = mqttPublish(topic, imageData, 0, false);
+        bool res = mqttPublishBinary(topic.c_str(), (char *)fb->buf, fb->len, 1, false);
         Serial.println("mqttPublish res = " + String(res));
     }
     esp_camera_fb_return(fb);

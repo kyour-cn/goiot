@@ -2,6 +2,7 @@
 
 // 服务器信息和其他常量声
 extern const char *GOIOT_MQTT_SERVER;
+extern const int GOIOT_MQTT_HOST;
 extern const char *GOIOT_MQTT_USER;
 extern const char *GOIOT_MQTT_PASS;
 extern const int GOIOT_MQTT_HEARTBEAT_INTERVAL;
