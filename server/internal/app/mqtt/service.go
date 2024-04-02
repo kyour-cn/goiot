@@ -50,9 +50,14 @@ func ServiceStart() {
 	token := client.Subscribe(topic, 1, subscribe.SysBrokersClientsHandler)
 	token.Wait()
 
-	// 订阅客户端事件
+	// 订阅设备基本信息
 	topic = mqttConfig.SharePrefix + "device/basic/#"
 	token = client.Subscribe(topic, 1, subscribe.DeviceBasicHandler)
+	token.Wait()
+
+	// 订阅设备上报数据
+	topic = mqttConfig.SharePrefix + "device/up/#"
+	token = client.Subscribe(topic, 1, subscribe.DeviceUpHandler)
 	token.Wait()
 
 	select {}
