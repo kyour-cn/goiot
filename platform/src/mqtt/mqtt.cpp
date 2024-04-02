@@ -36,6 +36,11 @@ bool mqttPublish(const String &topic, const String &payload, int qos, bool retai
     return mqttClient.publish(topic, payload, qos, retain);
 }
 
+// 发布消息二进制数据
+bool mqttPublishBinary(const char* topic, const uint8_t* payload, size_t payload_len, int qos, bool retain) {
+    return mqttClient.publishBinary(topic, payload, payload_len, qos, retain);
+}
+
 /**
  * Callback when connection is established
  * @param client
