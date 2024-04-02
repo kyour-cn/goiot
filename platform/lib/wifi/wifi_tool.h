@@ -1,7 +1,4 @@
-
-#ifndef GOIOT_LITE_WIFI_H
-#define GOIOT_LITE_WIFI_H
-
+#pragma once
 
 //32: https://github.com/Edzelf/ESP32-Radio
 //8266 : https://github.com/earlephilhower/ESP8266Audio
@@ -35,5 +32,3 @@ public:
 
     static String getMacAddress();
 };
-
-#endif //GOIOT_LITE_WIFI_H

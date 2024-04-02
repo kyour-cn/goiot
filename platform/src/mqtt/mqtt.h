@@ -1,6 +1,6 @@
 #pragma once
 #include <Arduino.h>
-#include "ESP32MQTTClient.h"
+#include <PicoMQTT.h>
 #include "config/config.h"
 
 void initMqtt();
