@@ -1,6 +1,12 @@
 #include "mqtt.h"
 
-ESP32MQTTClient mqttClient;
+PicoMQTT::Client mqtt(
+    GOIOT_MQTT_SERVER,
+    GOIOT_MQTT_HOST,
+    GOIOT_DEVICE_KEY,
+    GOIOT_MQTT_USER,
+    GOIOT_MQTT_PASS
+);
 
 /**
  * 初始化MQTT
@@ -8,49 +14,38 @@ ESP32MQTTClient mqttClient;
 void initMqtt() {
     Serial.println("Connecting to MQTT...");
 
-    mqttClient.enableDebuggingMessages();
+    // 订阅主题
+    const String subtopic = String("device/+/down/") + GOIOT_DEVICE_KEY;
+    mqtt.subscribe(subtopic, [](const char *topic, const char *payload) {
+        Serial.printf("%s: %s", topic, payload);
+    });
 
-    mqttClient.setURI(GOIOT_MQTT_SERVER, GOIOT_MQTT_USER, GOIOT_MQTT_PASS);
-    mqttClient.setMqttClientName(GOIOT_DEVICE_KEY);
-    mqttClient.enableLastWillMessage((std::string("device/basic/offline/") + GOIOT_DEVICE_KEY).c_str(), "offline");
-    mqttClient.setKeepAlive(30);
-    mqttClient.loopStart();
+    mqtt.begin();
 
 }
 
 // 上次心跳发送时间
 unsigned long lastHeartbeat = 0;
 
-void mqttLoop()
-{
+void mqttLoop() {
+
+    mqtt.loop();
+
+    unsigned long millisVal = millis();
     // 发送心跳
-    if (millis() - lastHeartbeat > GOIOT_MQTT_HEARTBEAT_INTERVAL) {
-        lastHeartbeat = millis();
-        const std::string topic = std::string("device/basic/ping/") + GOIOT_DEVICE_KEY;
-        mqttClient.publish(topic.c_str(), std::to_string(lastHeartbeat).c_str(), 0, false);
+    if (millisVal - lastHeartbeat > GOIOT_MQTT_HEARTBEAT_INTERVAL || lastHeartbeat / 2 > millisVal) {
+        lastHeartbeat = millisVal;
+        const String topic = String("device/basic/ping/") + GOIOT_DEVICE_KEY;
+        mqtt.publish(topic, String(lastHeartbeat));
     }
 }
 
-/**
- * Callback when connection is established
- * @param client
- */
-void onConnectionEstablishedCallback(esp_mqtt_client_handle_t client)
-{
-    Serial.println("MQTT connected");
-    // 订阅主题
-    const std::string subtopic = std::string("device/+/down/") + GOIOT_DEVICE_KEY;
-    if (mqttClient.isMyTurn(client))
-    {
-        mqttClient.subscribe(subtopic.c_str(), [](const String &topic, const String &payload)
-        {
-            Serial.printf("%s: %s", topic.c_str(), payload.c_str());
-        });
-    }
+// 发布消息
+bool mqttPublish(const String &topic, const String &payload, int qos, bool retain) {
+    return mqtt.publish(topic, payload, qos, retain);
 }
 
-esp_err_t handleMQTT(esp_mqtt_event_handle_t event)
-{
-    mqttClient.onEventCallback(event);
-    return ESP_OK;
+// 发布消息二进制数据
+bool mqttPublishBinary(const char *topic, const char *payload, size_t payload_len, int qos, bool retain) {
+    return mqtt.publish_P(topic, payload, payload_len, qos, retain);
 }
