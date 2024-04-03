@@ -79,7 +79,12 @@ bool WifiTool::connect(const char *ssid, const char *password, int timeout) {
 bool WifiTool::smartConfig(int timeout) {
     WiFi.mode(WIFI_STA);
     Serial.println("Wait for SmartConfig...");
+
+#ifdef ESP32
     WiFi.beginSmartConfig(SC_TYPE_ESPTOUCH_AIRKISS);
+#else
+    WiFi.beginSmartConfig();
+#endif
 
     int count = 0;
 
