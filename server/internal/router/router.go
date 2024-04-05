@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-gourd/gourd/config"
-	apiRoute "gourd/internal/app/api/route"
+	adminRoute "gourd/internal/app/admin/route"
 	"net/http"
 	"os"
 )
@@ -21,10 +21,29 @@ func GetRouter() *chi.Mux {
 	return router
 }
 
+// CORS middleware
+func CORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set headers
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "*")
+
+		// If this is a preflight request, we only need to add the headers, no further processing is required
+		if r.Method == "OPTIONS" {
+			return
+		}
+
+		// Call the next handler
+		next.ServeHTTP(w, r)
+	})
+}
+
 // Register 注册路由
 func Register() {
 
 	r := GetRouter()
+
+	r.Use(CORS)
 
 	// 主页
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -51,9 +70,9 @@ func Register() {
 		_, _ = w.Write([]byte("404 not found."))
 	})
 
-	// 注册api相关路由
-	apiGroup := chi.NewRouter().
-		Group(apiRoute.RegisterRoute)
-	r.Mount("/api", apiGroup)
+	// 注册admin相关路由
+	adminGroup := chi.NewRouter().
+		Group(adminRoute.RegisterRoute)
+	r.Mount("/admin", adminGroup)
 
 }

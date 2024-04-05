@@ -49,3 +49,41 @@ func Remember[T any](key string, ttl int, dataCallback func() (*T, error)) (*T, 
 
 	return value2, nil
 }
+
+// Set 缓存数据
+func Set(key string, value any, ttl int) error {
+	redis, err := tools.GetRedis()
+	if err != nil {
+		return err
+	}
+	var ctx = context.Background()
+
+	err = redis.Set(ctx, key, value, time.Duration(ttl)*time.Second).Err()
+	return err
+}
+
+// Get 获取缓存数据
+func Get(key string) (string, error) {
+	redis, err := tools.GetRedis()
+	if err != nil {
+		return "", err
+	}
+	var ctx = context.Background()
+	// Try to get the value from the cache
+	value, err := redis.Get(ctx, key).Result()
+	if err != nil {
+		return "", err
+	}
+	return value, nil
+}
+
+// Del 删除缓存数据
+func Del(key string) error {
+	redis, err := tools.GetRedis()
+	if err != nil {
+		return err
+	}
+	var ctx = context.Background()
+	err = redis.Del(ctx, key).Err()
+	return err
+}

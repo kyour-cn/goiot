@@ -46,6 +46,14 @@ func main() {
 		ComOpts: &comOpts,
 		// 需要生成代码的数据表，需要被关联的模型需要放在前面，默认生成所有表
 		Tables: []gen_tools.Table{
+
+			// 后台相关数据表
+			{Name: "app"},
+			{Name: "role"},
+			{Name: "rule"},
+			{Name: "menu"},
+
+			// 基础功能表
 			{
 				Name: "user",
 				//Relate: &[]gen_tools.TableRelate{

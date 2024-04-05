@@ -33,6 +33,8 @@ func newDevice(db *gorm.DB, opts ...gen.DOOption) device {
 	_device.ProductID = field.NewInt32(tableName, "product_id")
 	_device.UserID = field.NewInt32(tableName, "user_id")
 	_device.Secret = field.NewString(tableName, "secret")
+	_device.Data = field.NewString(tableName, "data")
+	_device.IsOnline = field.NewInt32(tableName, "is_online")
 	_device.OnlineTime = field.NewInt32(tableName, "online_time")
 	_device.CreateTime = field.NewUint(tableName, "create_time")
 	_device.UpdateTime = field.NewUint(tableName, "update_time")
@@ -53,6 +55,8 @@ type device struct {
 	ProductID  field.Int32  // 产品id
 	UserID     field.Int32  // 所属用户
 	Secret     field.String // 密钥
+	Data       field.String // 自定义属性数据
+	IsOnline   field.Int32  // 是否在线
 	OnlineTime field.Int32  // 最后上线时间
 	CreateTime field.Uint   // 创建时间
 	UpdateTime field.Uint   // 更新时间
@@ -79,6 +83,8 @@ func (d *device) updateTableName(table string) *device {
 	d.ProductID = field.NewInt32(table, "product_id")
 	d.UserID = field.NewInt32(table, "user_id")
 	d.Secret = field.NewString(table, "secret")
+	d.Data = field.NewString(table, "data")
+	d.IsOnline = field.NewInt32(table, "is_online")
 	d.OnlineTime = field.NewInt32(table, "online_time")
 	d.CreateTime = field.NewUint(table, "create_time")
 	d.UpdateTime = field.NewUint(table, "update_time")
@@ -99,13 +105,15 @@ func (d *device) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (d *device) fillFieldMap() {
-	d.fieldMap = make(map[string]field.Expr, 10)
+	d.fieldMap = make(map[string]field.Expr, 12)
 	d.fieldMap["id"] = d.ID
 	d.fieldMap["device_key"] = d.DeviceKey
 	d.fieldMap["mac"] = d.Mac
 	d.fieldMap["product_id"] = d.ProductID
 	d.fieldMap["user_id"] = d.UserID
 	d.fieldMap["secret"] = d.Secret
+	d.fieldMap["data"] = d.Data
+	d.fieldMap["is_online"] = d.IsOnline
 	d.fieldMap["online_time"] = d.OnlineTime
 	d.fieldMap["create_time"] = d.CreateTime
 	d.fieldMap["update_time"] = d.UpdateTime

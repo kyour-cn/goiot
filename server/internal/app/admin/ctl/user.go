@@ -1,9 +1,9 @@
-package controller
+package ctl
 
 import (
 	"fmt"
 	"gorm.io/gen/field"
-	"gourd/internal/app"
+	"gourd/internal/app/admin"
 	"gourd/internal/orm/model"
 	"gourd/internal/orm/query"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 
 // UserController 用户控制器
 type UserController struct {
-	app.BaseController //继承基础控制器
+	admin.BaseController //继承基础控制器
 }
 
 // Info 获取用户信息

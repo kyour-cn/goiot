@@ -1,14 +1,14 @@
-package controller
+package ctl
 
 import (
 	"github.com/go-gourd/gourd/event"
-	"gourd/internal/app"
+	"gourd/internal/app/admin"
 	"net/http"
 )
 
 // TestsController 测试
 type TestsController struct {
-	app.BaseController //继承基础控制器
+	admin.BaseController //继承基础控制器
 }
 
 // Test 测试

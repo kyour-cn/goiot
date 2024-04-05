@@ -17,23 +17,35 @@ import (
 
 var (
 	Q       = new(Query)
+	App     *app
 	Device  *device
+	Menu    *menu
 	Product *product
+	Role    *role
+	Rule    *rule
 	User    *user
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
+	App = &Q.App
 	Device = &Q.Device
+	Menu = &Q.Menu
 	Product = &Q.Product
+	Role = &Q.Role
+	Rule = &Q.Rule
 	User = &Q.User
 }
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
 		db:      db,
+		App:     newApp(db, opts...),
 		Device:  newDevice(db, opts...),
+		Menu:    newMenu(db, opts...),
 		Product: newProduct(db, opts...),
+		Role:    newRole(db, opts...),
+		Rule:    newRule(db, opts...),
 		User:    newUser(db, opts...),
 	}
 }
@@ -41,8 +53,12 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 type Query struct {
 	db *gorm.DB
 
+	App     app
 	Device  device
+	Menu    menu
 	Product product
+	Role    role
+	Rule    rule
 	User    user
 }
 
@@ -51,8 +67,12 @@ func (q *Query) Available() bool { return q.db != nil }
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
 		db:      db,
+		App:     q.App.clone(db),
 		Device:  q.Device.clone(db),
+		Menu:    q.Menu.clone(db),
 		Product: q.Product.clone(db),
+		Role:    q.Role.clone(db),
+		Rule:    q.Rule.clone(db),
 		User:    q.User.clone(db),
 	}
 }
@@ -68,22 +88,34 @@ func (q *Query) WriteDB() *Query {
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
 		db:      db,
+		App:     q.App.replaceDB(db),
 		Device:  q.Device.replaceDB(db),
+		Menu:    q.Menu.replaceDB(db),
 		Product: q.Product.replaceDB(db),
+		Role:    q.Role.replaceDB(db),
+		Rule:    q.Rule.replaceDB(db),
 		User:    q.User.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
+	App     *appDo
 	Device  *deviceDo
+	Menu    *menuDo
 	Product *productDo
+	Role    *roleDo
+	Rule    *ruleDo
 	User    *userDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
+		App:     q.App.WithContext(ctx),
 		Device:  q.Device.WithContext(ctx),
+		Menu:    q.Menu.WithContext(ctx),
 		Product: q.Product.WithContext(ctx),
+		Role:    q.Role.WithContext(ctx),
+		Rule:    q.Rule.WithContext(ctx),
 		User:    q.User.WithContext(ctx),
 	}
 }

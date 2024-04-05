@@ -17,6 +17,7 @@ type Product struct {
 	ID         int32                 `gorm:"column:id;primaryKey;autoIncrement:true;comment:产品id" json:"id"`             // 产品id
 	Name       string                `gorm:"column:name;not null;comment:产品名称" json:"name"`                              // 产品名称
 	Key        string                `gorm:"column:key;not null;comment:产品标识名称" json:"key"`                              // 产品标识名称
+	Property   string                `gorm:"column:property;not null;comment:属性设定" json:"property"`                      // 属性设定
 	CreateTime uint                  `gorm:"column:create_time;not null;autoCreateTime;comment:创建时间" json:"create_time"` // 创建时间
 	UpdateTime uint                  `gorm:"column:update_time;not null;autoUpdateTime;comment:更新时间" json:"update_time"` // 更新时间
 	DeleteTime soft_delete.DeletedAt `gorm:"column:delete_time;not null;comment:删除时间 0表示未删除" json:"delete_time"`         // 删除时间 0表示未删除

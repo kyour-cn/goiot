@@ -30,6 +30,7 @@ func newProduct(db *gorm.DB, opts ...gen.DOOption) product {
 	_product.ID = field.NewInt32(tableName, "id")
 	_product.Name = field.NewString(tableName, "name")
 	_product.Key = field.NewString(tableName, "key")
+	_product.Property = field.NewString(tableName, "property")
 	_product.CreateTime = field.NewUint(tableName, "create_time")
 	_product.UpdateTime = field.NewUint(tableName, "update_time")
 	_product.DeleteTime = field.NewField(tableName, "delete_time")
@@ -46,6 +47,7 @@ type product struct {
 	ID         field.Int32  // 产品id
 	Name       field.String // 产品名称
 	Key        field.String // 产品标识名称
+	Property   field.String // 属性设定
 	CreateTime field.Uint   // 创建时间
 	UpdateTime field.Uint   // 更新时间
 	DeleteTime field.Field  // 删除时间 0表示未删除
@@ -68,6 +70,7 @@ func (p *product) updateTableName(table string) *product {
 	p.ID = field.NewInt32(table, "id")
 	p.Name = field.NewString(table, "name")
 	p.Key = field.NewString(table, "key")
+	p.Property = field.NewString(table, "property")
 	p.CreateTime = field.NewUint(table, "create_time")
 	p.UpdateTime = field.NewUint(table, "update_time")
 	p.DeleteTime = field.NewField(table, "delete_time")
@@ -87,10 +90,11 @@ func (p *product) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (p *product) fillFieldMap() {
-	p.fieldMap = make(map[string]field.Expr, 6)
+	p.fieldMap = make(map[string]field.Expr, 7)
 	p.fieldMap["id"] = p.ID
 	p.fieldMap["name"] = p.Name
 	p.fieldMap["key"] = p.Key
+	p.fieldMap["property"] = p.Property
 	p.fieldMap["create_time"] = p.CreateTime
 	p.fieldMap["update_time"] = p.UpdateTime
 	p.fieldMap["delete_time"] = p.DeleteTime
