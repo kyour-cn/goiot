@@ -1,0 +1,5 @@
+
+# 加密密钥
+secret = "go-iot"
+
+expire = 86400

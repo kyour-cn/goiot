@@ -8,8 +8,9 @@ import (
 // RegisterRoute 注册路由组
 func RegisterRoute(r chi.Router) {
 
-	lCtl := loginCtl.LoginCtl{}
-	r.HandleFunc("/login/captcha", lCtl.Captcha)
-	r.HandleFunc("/login/login", lCtl.Login)
+	lCtl := loginCtl.AuthCtl{}
+	r.HandleFunc("/auth/captcha", lCtl.Captcha)
+	r.HandleFunc("/auth/login", lCtl.Login)
+	r.HandleFunc("/auth/menu", lCtl.Menu)
 
 }

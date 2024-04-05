@@ -10,13 +10,13 @@ import (
 	"net/http"
 )
 
-// LoginCtl 测试
-type LoginCtl struct {
+// AuthCtl 测试
+type AuthCtl struct {
 	admin.BaseController //继承基础控制器
 }
 
 // Captcha 测试
-func (ctl *LoginCtl) Captcha(w http.ResponseWriter, r *http.Request) {
+func (ctl *AuthCtl) Captcha(w http.ResponseWriter, r *http.Request) {
 
 	params := r.URL.Query()
 
@@ -47,7 +47,7 @@ func (ctl *LoginCtl) Captcha(w http.ResponseWriter, r *http.Request) {
 }
 
 // Login 测试
-func (ctl *LoginCtl) Login(w http.ResponseWriter, r *http.Request) {
+func (ctl *AuthCtl) Login(w http.ResponseWriter, r *http.Request) {
 
 	number := r.FormValue("number")
 	code := r.FormValue("code")
@@ -76,8 +76,7 @@ func (ctl *LoginCtl) Login(w http.ResponseWriter, r *http.Request) {
 		password = hex.EncodeToString(pwdMd5.Sum(nil))
 	}
 
-	ls := service.LoginService{}
-	if user, token, err := ls.GenToken(username, password); err != nil {
+	if user, token, err := service.GenToken(username, password); err != nil {
 		_ = ctl.Fail(w, http.StatusInternalServerError, err.Error(), nil)
 		return
 	} else {
@@ -96,4 +95,31 @@ func (ctl *LoginCtl) Login(w http.ResponseWriter, r *http.Request) {
 		_ = ctl.Success(w, "", data)
 		return
 	}
+}
+
+// Menu 获取菜单
+func (ctl *AuthCtl) Menu(w http.ResponseWriter, r *http.Request) {
+
+	auth := r.Header.Get("Authorization")
+
+	// 校验token前缀是否`Bearer `
+	if len(auth) < 7 || auth[:7] != "Bearer " {
+		_ = ctl.Fail(w, http.StatusBadRequest, "token格式错误", nil)
+		return
+	}
+
+	// 去除token前缀
+	auth = auth[7:]
+	if token, err := service.ParseToken(auth); err != nil {
+		_ = ctl.Fail(w, http.StatusInternalServerError, err.Error(), nil)
+	} else {
+		_ = token
+		menu := service.GetMenu(1)
+		data := map[string]any{
+			"menu":        menu,
+			"permissions": []string{},
+		}
+		_ = ctl.Success(w, "", data)
+	}
+
 }
