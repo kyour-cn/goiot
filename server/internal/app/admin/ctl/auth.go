@@ -6,6 +6,7 @@ import (
 	"github.com/steambap/captcha"
 	"gourd/internal/app/admin"
 	"gourd/internal/app/admin/service"
+	"gourd/internal/orm/query"
 	"gourd/pkg/cache"
 	"net/http"
 )
@@ -102,10 +103,19 @@ func (ctl *AuthCtl) Menu(w http.ResponseWriter, r *http.Request) {
 
 	auth := r.Header.Get("Authorization")
 
-	// 校验token前缀是否`Bearer `
-	if len(auth) < 7 || auth[:7] != "Bearer " {
-		_ = ctl.Fail(w, http.StatusBadRequest, "token格式错误", nil)
+	uid, err := service.CheckAuth(auth)
+	if err != nil {
+		_ = ctl.Fail(w, http.StatusInternalServerError, err.Error(), nil)
 		return
+	}
+
+	user, err := query.User.Where(query.User.ID.Eq(uid)).First()
+	if err != nil {
+		_ = ctl.Fail(w, http.StatusInternalServerError, "账号不存在", nil)
+	}
+	role, err := query.Role.Where(query.Role.ID.Eq(user.RoleID)).First()
+	if err != nil {
+		_ = ctl.Fail(w, http.StatusInternalServerError, "角色不存在", nil)
 	}
 
 	// 去除token前缀
@@ -114,7 +124,7 @@ func (ctl *AuthCtl) Menu(w http.ResponseWriter, r *http.Request) {
 		_ = ctl.Fail(w, http.StatusInternalServerError, err.Error(), nil)
 	} else {
 		_ = token
-		menu := service.GetMenu(1)
+		menu := service.GetMenu(role.AppID)
 		data := map[string]any{
 			"menu":        menu,
 			"permissions": []string{},

@@ -127,6 +127,26 @@ func buildMenuTree(menuList []*model.Menu, pid int32) []Menu {
 	return result
 }
 
+// CheckAuth 校验token并返回用户ID
+func CheckAuth(auth string) (uid int32, err error) {
+
+	// 校验token前缀是否`Bearer `
+	if len(auth) < 7 || auth[:7] != "Bearer " {
+		err = errors.New("token格式错误")
+		return
+	}
+
+	// 去除token前缀
+	auth = auth[7:]
+	if token, err := ParseToken(auth); err != nil {
+		return 0, err
+	} else {
+		uidS, _ := token.GetSubject()
+		uid, err := strconv.Atoi(uidS)
+		return (int32)(uid), err
+	}
+}
+
 func GetMenu(appId int32) []Menu {
 	m := query.Menu
 	menus, err := m.Where(m.AppID.Eq(appId)).Find()
