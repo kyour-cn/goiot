@@ -1,8 +1,8 @@
-import API from "@/api";
+import uploadApi from "@/api/common/upload";
 
 //上传配置
 export default {
-    apiObj: API.common.upload,			//上传请求API对象
+    apiObj: uploadApi.upload,			//上传请求API对象
     filename: "file",					//form请求时文件的key
     successCode: 0,					    //请求完成代码
     maxSize: 10,						//最大文件大小 默认10MB
@@ -14,6 +14,6 @@ export default {
             msg: res.message			//分析描述字段结构
         }
     },
-    apiObjFile: API.common.uploadFile,	//附件上传请求API对象
+    apiObjFile: uploadApi.upload,	//附件上传请求API对象
     maxSizeFile: 10						//最大文件大小 默认10MB
 }

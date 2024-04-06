@@ -46,7 +46,7 @@
 
 <script>
 import config from "@/config"
-import auth from "@/api/model/auth";
+import auth from "@/api/common/auth";
 
 export default {
 	data() {
@@ -103,7 +103,7 @@ export default {
 				number: this.codeNumber
 			};
 			//获取token
-			const user = await this.$API.auth.token.post(data);
+			const user = await auth.token.post(data);
 			if (user.code === 0) {
 				this.$TOOL.cookie.set("TOKEN", user.data.token, {
 					expires: this.form.autologin ? 24 * 60 * 60 : 0
@@ -116,7 +116,7 @@ export default {
 				return false
 			}
 			//获取菜单
-			const menu = await this.$API.auth.menu.get();
+			const menu = await auth.menu.get();
 			if (menu.code === 0) {
 				if (menu.data.menu.length === 0) {
 					this.islogin = false

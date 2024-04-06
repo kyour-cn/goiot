@@ -53,6 +53,7 @@ import saveDialog from './save'
 import info from './info'
 import ScStatusIndicator from "@/components/scMini/scStatusIndicator.vue";
 import ScTable from "@/components/scTable/index.vue";
+import appApi from "@/api/system/app";
 
 export default {
 	name: 'app',
@@ -69,7 +70,7 @@ export default {
 				info: false
 			},
 			list: {
-				apiObj: this.$API.system.app.list
+				apiObj: appApi.list
 			},
 			selection: []
 		}
@@ -98,8 +99,8 @@ export default {
 		},
 		//删除明细
 		async table_del(row, index) {
-			var reqData = {ids: row.id}
-			var res = await this.$API.system.app.del.post(reqData);
+			var reqData = {id: row.id}
+			var res = await appApi.del.post(reqData);
 			if (res.code === 0) {
 				this.$refs.table.removeIndex(index)
 				this.$message.success("删除成功")
@@ -121,7 +122,7 @@ export default {
 			}
 
 			var ids = this.selection.map(v => v.id)
-			var res = await this.$API.system.app.del.post({ids});
+			var res = await appApi.del.post({id: ids.join(',')});
 			if (res.code === 0) {
 				this.$refs.table.removeKeys(ids)
 				this.$message.success("操作成功")

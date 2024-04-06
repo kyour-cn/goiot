@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import appApi from "@/api/system/app";
 export default {
 	emits: ['success', 'closed'],
 	data() {
@@ -83,7 +84,7 @@ export default {
 			this.isSaveing = true;
 			const data = this.form
 			data.status = data.status ? 1 : 0;
-			const res = await this.$API.system.app.edit.post(data);
+			const res = await appApi[this.mode].post(data);
 			this.isSaveing = false;
 			this.visible = false;
 			if (res.code === 0) {

@@ -113,11 +113,16 @@ const http = {
 	 * @param  {object} config 参数
 	 */
 	post: function (url, data = {}, config = {}) {
+		const formData = new FormData();
+		for (const key in data) {
+			formData.append(key, data[key]);
+		}
+
 		return new Promise((resolve, reject) => {
 			axios({
 				method: 'post',
 				url: url,
-				data: data,
+				data: formData,
 				...config
 			}).then((response) => {
 				resolve(response.data);
