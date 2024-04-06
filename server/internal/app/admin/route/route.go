@@ -3,6 +3,7 @@ package route
 import (
 	"github.com/go-chi/chi/v5"
 	loginCtl "gourd/internal/app/admin/ctl"
+	"gourd/internal/app/admin/ctl/platform"
 	"gourd/internal/app/admin/ctl/system"
 )
 
@@ -14,9 +15,14 @@ func RegisterRoute(r chi.Router) {
 	r.HandleFunc("/auth/login", lCtl.Login)
 	r.HandleFunc("/auth/menu", lCtl.Menu)
 
-	// 注册admin相关路由
+	// 注册系统相关路由
 	adminGroup := chi.NewRouter().
 		Group(system.RegisterRoute)
 	r.Mount("/system", adminGroup)
+
+	// 注册平台相关路由
+	platformGroup := chi.NewRouter().
+		Group(platform.RegisterRoute)
+	r.Mount("/platform", platformGroup)
 
 }

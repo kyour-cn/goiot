@@ -1,4 +1,4 @@
-package system
+package platform
 
 import (
 	"gorm.io/gen"
@@ -10,25 +10,23 @@ import (
 	"strings"
 )
 
-type AppCtl struct {
+type ProductCtl struct {
 	admin.BaseController //继承基础控制器
 }
 
-func (c *AppCtl) Add(w http.ResponseWriter, r *http.Request) {
+func (c *ProductCtl) Add(w http.ResponseWriter, r *http.Request) {
 
 	status, _ := strconv.Atoi(r.FormValue("status"))
-	sort, _ := strconv.Atoi(r.FormValue("sort"))
 
-	app := &model.App{
+	product := &model.Product{
 		Name:   r.FormValue("name"),
 		Key:    r.FormValue("key"),
-		Status: int32(status),
-		Sort:   int32(sort),
 		Remark: r.FormValue("remark"),
+		Status: int32(status),
 	}
-	var qA = query.App
+	var qA = query.Product
 
-	err := qA.Create(app)
+	err := qA.Create(product)
 	if err != nil {
 		_ = c.Fail(w, http.StatusInternalServerError, "添加失败", err.Error())
 		return
@@ -37,8 +35,8 @@ func (c *AppCtl) Add(w http.ResponseWriter, r *http.Request) {
 	_ = c.Success(w, "添加成功", nil)
 }
 
-func (c *AppCtl) Delete(w http.ResponseWriter, r *http.Request) {
-	var qA = query.App
+func (c *ProductCtl) Delete(w http.ResponseWriter, r *http.Request) {
+	var qA = query.Product
 
 	var idArr []int32
 	for _, s := range strings.Split(r.FormValue("id"), ",") {
@@ -54,17 +52,15 @@ func (c *AppCtl) Delete(w http.ResponseWriter, r *http.Request) {
 	_ = c.Success(w, "删除成功", nil)
 }
 
-func (c *AppCtl) Edit(w http.ResponseWriter, r *http.Request) {
+func (c *ProductCtl) Edit(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(r.FormValue("id"))
 	status, _ := strconv.Atoi(r.FormValue("status"))
-	sort, _ := strconv.Atoi(r.FormValue("sort"))
 
-	var qA = query.App
+	var qA = query.Product
 	_, err := qA.Where(qA.ID.Eq(int32(id))).UpdateSimple(
 		qA.Name.Value(r.FormValue("name")),
 		qA.Key.Value(r.FormValue("key")),
 		qA.Status.Value(int32(status)),
-		qA.Sort.Value(int32(sort)),
 		qA.Remark.Value(r.FormValue("remark")),
 	)
 	if err != nil {
@@ -74,7 +70,7 @@ func (c *AppCtl) Edit(w http.ResponseWriter, r *http.Request) {
 	_ = c.Success(w, "修改成功", nil)
 }
 
-func (c *AppCtl) List(w http.ResponseWriter, r *http.Request) {
+func (c *ProductCtl) List(w http.ResponseWriter, r *http.Request) {
 
 	rq := r.URL.Query()
 
@@ -88,7 +84,7 @@ func (c *AppCtl) List(w http.ResponseWriter, r *http.Request) {
 		pageSize, _ = strconv.Atoi(rq.Get("page_size"))
 	}
 
-	var qA = query.App
+	var qA = query.Product
 
 	var condition []gen.Condition
 

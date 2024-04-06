@@ -6,9 +6,9 @@ import (
 
 func RegisterRoute(r chi.Router) {
 
-	lCtl := AppCtl{}
-	r.HandleFunc("/app/add", lCtl.Add)
-	r.HandleFunc("/app/edit", lCtl.Edit)
-	r.HandleFunc("/app/list", lCtl.List)
-	r.HandleFunc("/app/delete", lCtl.Delete)
+	aCtl := AppCtl{}
+	r.HandleFunc("/app/add", aCtl.Add)
+	r.HandleFunc("/app/edit", aCtl.Edit)
+	r.HandleFunc("/app/list", aCtl.List)
+	r.HandleFunc("/app/delete", aCtl.Delete)
 }
