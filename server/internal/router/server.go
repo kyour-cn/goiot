@@ -23,6 +23,13 @@ func StartServer() {
 	log.Info("Started http server. " + addr)
 
 	go func() {
+
+		defer func() {
+			if r := recover(); r != nil {
+				log.Error("http panic: " + fmt.Sprint(r))
+			}
+		}()
+
 		r := GetRouter()
 		// 启动http服务
 		err := http.ListenAndServe(addr, r)

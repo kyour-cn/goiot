@@ -43,10 +43,10 @@ func Register() {
 		log.Debug("start event.")
 
 		// 启动Http服务
-		//router.StartServer()
+		router.StartServer()
 
 		// 启动MQTT服务
-		go mqtt.ServiceStart()
+		mqtt.ServiceStart()
 	})
 
 	// Stop事件(应用) -终止时执行
