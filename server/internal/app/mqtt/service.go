@@ -3,6 +3,7 @@ package mqtt
 import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/go-gourd/gourd/config"
+	"github.com/go-gourd/gourd/log"
 	"gourd/internal/app/mqtt/subscribe"
 	"strconv"
 	"time"
@@ -54,6 +55,8 @@ func ServiceStart() {
 	topic = mqttConfig.SharePrefix + "device/basic/#"
 	token = client.Subscribe(topic, 1, subscribe.DeviceBasicHandler)
 	token.Wait()
+
+	log.Info("mqtt service start")
 
 	select {}
 }

@@ -3,7 +3,6 @@ package event
 import (
 	"github.com/go-gourd/gourd/event"
 	"github.com/go-gourd/gourd/log"
-	"gourd/internal/app/mqtt"
 	"gourd/internal/cmd"
 	"gourd/internal/cron"
 	"gourd/internal/router"
@@ -46,7 +45,7 @@ func RegisterAdmin() {
 		router.StartServer()
 
 		// 启动MQTT服务
-		go mqtt.ServiceStart()
+		//go mqtt.ServiceStart()
 	})
 
 	// Stop事件(应用) -终止时执行

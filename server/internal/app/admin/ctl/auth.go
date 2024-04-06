@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"github.com/steambap/captcha"
 	"gourd/internal/app/admin"
-	"gourd/internal/app/admin/service"
+	"gourd/internal/app/admin/service/auth_service"
 	"gourd/internal/orm/query"
 	"gourd/pkg/cache"
 	"net/http"
@@ -44,7 +44,6 @@ func (ctl *AuthCtl) Captcha(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_ = img.WriteImage(w)
-
 }
 
 // Login 测试
@@ -77,9 +76,8 @@ func (ctl *AuthCtl) Login(w http.ResponseWriter, r *http.Request) {
 		password = hex.EncodeToString(pwdMd5.Sum(nil))
 	}
 
-	if user, token, err := service.GenToken(username, password); err != nil {
+	if user, token, err := auth_service.GenToken(username, password); err != nil {
 		_ = ctl.Fail(w, http.StatusInternalServerError, err.Error(), nil)
-		return
 	} else {
 
 		data := map[string]any{
@@ -94,7 +92,6 @@ func (ctl *AuthCtl) Login(w http.ResponseWriter, r *http.Request) {
 		}
 
 		_ = ctl.Success(w, "", data)
-		return
 	}
 }
 
@@ -102,8 +99,7 @@ func (ctl *AuthCtl) Login(w http.ResponseWriter, r *http.Request) {
 func (ctl *AuthCtl) Menu(w http.ResponseWriter, r *http.Request) {
 
 	auth := r.Header.Get("Authorization")
-
-	uid, err := service.CheckAuth(auth)
+	uid, err := auth_service.CheckAuth(auth)
 	if err != nil {
 		_ = ctl.Fail(w, http.StatusInternalServerError, err.Error(), nil)
 		return
@@ -120,16 +116,15 @@ func (ctl *AuthCtl) Menu(w http.ResponseWriter, r *http.Request) {
 
 	// 去除token前缀
 	auth = auth[7:]
-	if token, err := service.ParseToken(auth); err != nil {
+	if token, err := auth_service.ParseToken(auth); err != nil {
 		_ = ctl.Fail(w, http.StatusInternalServerError, err.Error(), nil)
 	} else {
 		_ = token
-		menu := service.GetMenu(role.AppID)
+		menu := auth_service.GetMenu(role.AppID)
 		data := map[string]any{
 			"menu":        menu,
 			"permissions": []string{},
 		}
 		_ = ctl.Success(w, "", data)
 	}
-
 }
