@@ -53,7 +53,7 @@ export default {
 		return {
 			// userType: 'admin',
 			form: {
-				user: "admin",
+				user: "platform",
 				password: "123456",
 				autologin: false,
 				code: '',
