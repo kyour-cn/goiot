@@ -84,27 +84,33 @@ func (c *ProductCtl) List(w http.ResponseWriter, r *http.Request) {
 		pageSize, _ = strconv.Atoi(rq.Get("page_size"))
 	}
 
-	var qA = query.Product
+	var q = query.Product
 
 	var condition []gen.Condition
+	if rq.Has("name") {
+		condition = append(condition, q.Name.Eq(rq.Get("name")))
+	}
+	if rq.Has("key") {
+		condition = append(condition, q.Key.Eq(rq.Get("key")))
+	}
+	if rq.Get("status") != "" {
+		status, _ := strconv.Atoi(rq.Get("status"))
+		condition = append(condition, q.Status.Eq(int32(status)))
+	}
 
-	//if params["name"] != nil {
-	//	condition = append(condition, qA.Name.Eq(params["name"].(string)))
-	//}
-	//if params["status"] != nil {
-	//	condition = append(condition, qA.Status.Eq(params["status"].(int32)))
-	//}
+	_q := q.Limit(pageSize).
+		Offset((page - 1) * pageSize)
 
-	list, err := qA.Where(condition...).
-		Limit(pageSize).
-		Offset((page - 1) * pageSize).
-		Find()
+	if len(condition) > 0 {
+		_q = _q.Where(condition...)
+	}
+
+	list, err := _q.Find()
 	if err != nil {
 		_ = c.Fail(w, http.StatusInternalServerError, "获取失败", nil)
 		return
 	}
-
-	total, _ := qA.Where(condition...).Count()
+	total, _ := q.Where(condition...).Count()
 	data := map[string]any{
 		"data":  list,
 		"total": total,

@@ -1,4 +1,4 @@
-package system
+package platform
 
 import (
 	"gorm.io/gen"
@@ -10,25 +10,23 @@ import (
 	"strings"
 )
 
-type AppCtl struct {
+type DeviceCtl struct {
 	admin.BaseController //继承基础控制器
 }
 
-func (c *AppCtl) Add(w http.ResponseWriter, r *http.Request) {
+func (c *DeviceCtl) Add(w http.ResponseWriter, r *http.Request) {
 
-	status, _ := strconv.Atoi(r.FormValue("status"))
-	sort, _ := strconv.Atoi(r.FormValue("sort"))
+	productId, _ := strconv.Atoi(r.FormValue("product_id"))
 
-	app := &model.App{
-		Name:   r.FormValue("name"),
-		Key:    r.FormValue("key"),
-		Status: int32(status),
-		Sort:   int32(sort),
-		Remark: r.FormValue("remark"),
+	device := &model.Device{
+		ProductID: int32(productId),
+		Key:       r.FormValue("key"),
+		Secret:    r.FormValue("secret"),
+		Remark:    r.FormValue("remark"),
 	}
-	var qA = query.App
+	var qA = query.Device
 
-	err := qA.Create(app)
+	err := qA.Create(device)
 	if err != nil {
 		_ = c.Fail(w, http.StatusInternalServerError, "添加失败", err.Error())
 		return
@@ -37,8 +35,8 @@ func (c *AppCtl) Add(w http.ResponseWriter, r *http.Request) {
 	_ = c.Success(w, "添加成功", nil)
 }
 
-func (c *AppCtl) Delete(w http.ResponseWriter, r *http.Request) {
-	var qA = query.App
+func (c *DeviceCtl) Delete(w http.ResponseWriter, r *http.Request) {
+	var qA = query.Device
 
 	var idArr []int32
 	for _, s := range strings.Split(r.FormValue("id"), ",") {
@@ -54,17 +52,13 @@ func (c *AppCtl) Delete(w http.ResponseWriter, r *http.Request) {
 	_ = c.Success(w, "删除成功", nil)
 }
 
-func (c *AppCtl) Edit(w http.ResponseWriter, r *http.Request) {
+func (c *DeviceCtl) Edit(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(r.FormValue("id"))
-	status, _ := strconv.Atoi(r.FormValue("status"))
-	sort, _ := strconv.Atoi(r.FormValue("sort"))
 
-	var qA = query.App
+	var qA = query.Device
 	_, err := qA.Where(qA.ID.Eq(int32(id))).UpdateSimple(
-		qA.Name.Value(r.FormValue("name")),
 		qA.Key.Value(r.FormValue("key")),
-		qA.Status.Value(int32(status)),
-		qA.Sort.Value(int32(sort)),
+		qA.Secret.Value(r.FormValue("secret")),
 		qA.Remark.Value(r.FormValue("remark")),
 	)
 	if err != nil {
@@ -74,7 +68,7 @@ func (c *AppCtl) Edit(w http.ResponseWriter, r *http.Request) {
 	_ = c.Success(w, "修改成功", nil)
 }
 
-func (c *AppCtl) List(w http.ResponseWriter, r *http.Request) {
+func (c *DeviceCtl) List(w http.ResponseWriter, r *http.Request) {
 
 	rq := r.URL.Query()
 
@@ -88,15 +82,15 @@ func (c *AppCtl) List(w http.ResponseWriter, r *http.Request) {
 		pageSize, _ = strconv.Atoi(rq.Get("page_size"))
 	}
 
-	var q = query.App
+	var q = query.Device
 
 	var condition []gen.Condition
-	if rq.Has("name") {
-		condition = append(condition, q.Name.Eq(rq.Get("name")))
+	if rq.Has("key") {
+		condition = append(condition, q.Key.Eq(rq.Get("key")))
 	}
-	if rq.Get("status") != "" {
-		status, _ := strconv.Atoi(rq.Get("status"))
-		condition = append(condition, q.Status.Eq(int32(status)))
+	if rq.Get("is_online") != "" {
+		isOnline, _ := strconv.Atoi(rq.Get("is_online"))
+		condition = append(condition, q.IsOnline.Eq(int32(isOnline)))
 	}
 
 	_q := q.Limit(pageSize).

@@ -15,13 +15,14 @@ const TableNameDevice = "device"
 // Device mapped from table <device>
 type Device struct {
 	ID         int32                 `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	DeviceKey  string                `gorm:"column:device_key;not null;comment:设备标识id" json:"device_key"`                // 设备标识id
+	Key        string                `gorm:"column:key;not null;comment:设备标识id" json:"key"`                              // 设备标识id
 	Mac        string                `gorm:"column:mac;not null;comment:设备mac地址" json:"mac"`                             // 设备mac地址
 	ProductID  int32                 `gorm:"column:product_id;not null;comment:产品id" json:"product_id"`                  // 产品id
 	UserID     int32                 `gorm:"column:user_id;not null;comment:所属用户" json:"user_id"`                        // 所属用户
 	Secret     string                `gorm:"column:secret;not null;comment:密钥" json:"secret"`                            // 密钥
 	Data       string                `gorm:"column:data;not null;comment:自定义属性数据" json:"data"`                           // 自定义属性数据
 	IsOnline   int32                 `gorm:"column:is_online;not null;comment:是否在线" json:"is_online"`                    // 是否在线
+	Remark     string                `gorm:"column:remark;not null;comment:备注" json:"remark"`                            // 备注
 	OnlineTime int32                 `gorm:"column:online_time;not null;comment:最后上线时间" json:"online_time"`              // 最后上线时间
 	CreateTime uint                  `gorm:"column:create_time;not null;autoCreateTime;comment:创建时间" json:"create_time"` // 创建时间
 	UpdateTime uint                  `gorm:"column:update_time;not null;autoUpdateTime;comment:更新时间" json:"update_time"` // 更新时间
