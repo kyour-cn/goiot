@@ -74,7 +74,7 @@ bool WifiTool::connect(const char *ssid, const char *password, int timeout) {
 }
 
 /**
- * Airkiss一键配网
+ * Smart配网
  */
 bool WifiTool::smartConfig(int timeout) {
     WiFi.mode(WIFI_STA);
