@@ -12,7 +12,7 @@ const unsigned long GOIOT_MQTT_HEARTBEAT_INTERVAL = 20000;
 const char *GOIOT_DEVICE_KEY = "test-8266";
 const char *GOIOT_DEVICE_SECRET = "test123";
 
-// 配网模式 _SC：SmartConfig模式 _AP：AP热点默认
+// 配网模式切换 _SC：SmartConfig模式 _AP：AP热点默认
 #define WIFI_CONFIG_MODE_AP
 
 #ifdef WIFI_CONFIG_MODE_AP

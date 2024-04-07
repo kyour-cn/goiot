@@ -19,6 +19,5 @@ void setup() {
 
 void loop() {
     mqttLoop();
-//    delay(1000);                  // 留时间给蓝牙缓冲
-//    Serial.println("loop!");
+
 }

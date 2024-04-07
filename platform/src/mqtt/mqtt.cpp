@@ -20,6 +20,19 @@ void initMqtt() {
         Serial.printf("%s: %s", topic, payload);
     });
 
+    mqtt.connected_callback = [] {
+        Serial.println("MQTT connected");
+
+        // 发送上线通知
+        const String topic = String("device/basic/online/") + GOIOT_DEVICE_KEY;
+        JsonDocument payload;
+        payload["device_key"] = GOIOT_DEVICE_KEY;
+        payload["device_name"] = GOIOT_DEVICE_SECRET;
+        String payloadStr;
+        serializeJson(payload, payloadStr);
+        mqtt.publish(topic, payloadStr);
+    };
+
     mqtt.begin();
 
 }
