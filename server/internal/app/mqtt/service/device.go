@@ -44,3 +44,10 @@ func (ds *DeviceService) Online(msg DeviceOnlineMsg) (*model.Device, error) {
 
 	return device, nil
 }
+
+func (ds *DeviceService) Offline(key string) error {
+	d := query.Device
+	_, err := d.Where(d.Key.Eq(key)).
+		Update(d.IsOnline, 0)
+	return err
+}

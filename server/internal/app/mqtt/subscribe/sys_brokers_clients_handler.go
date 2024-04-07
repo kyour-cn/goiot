@@ -5,6 +5,7 @@ import (
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/go-gourd/gourd/log"
+	"gourd/internal/app/mqtt/service"
 	"strings"
 )
 
@@ -66,7 +67,8 @@ func SysBrokersClientsHandler(client mqtt.Client, msg mqtt.Message) {
 		}
 
 		//TODO: 设备下线
-
+		s := service.DeviceService{}
+		_ = s.Offline(clientDisconnectStruct.Clientid)
 	}
 
 	// 取出消息
