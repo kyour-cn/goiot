@@ -26,8 +26,9 @@ void initMqtt() {
         // 发送上线通知
         const String topic = String("device/basic/online/") + GOIOT_DEVICE_KEY;
         JsonDocument payload;
-        payload["device_key"] = GOIOT_DEVICE_KEY;
-        payload["device_name"] = GOIOT_DEVICE_SECRET;
+        payload["mac"] = WiFi.macAddress();
+        payload["key"] = GOIOT_DEVICE_KEY;
+        payload["secret"] = GOIOT_DEVICE_SECRET;
         String payloadStr;
         serializeJson(payload, payloadStr);
         mqtt.publish(topic, payloadStr);
