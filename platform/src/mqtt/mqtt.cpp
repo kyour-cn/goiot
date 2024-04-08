@@ -17,25 +17,34 @@ void initMqtt() {
     // 订阅主题
     const String subtopic = String("device/+/down/") + GOIOT_DEVICE_KEY;
     mqtt.subscribe(subtopic, [](const char *topic, const char *payload) {
-        Serial.printf("%s: %s", topic, payload);
+        // 处理订阅消息
+        Subscribe::Handler::down(topic, payload);
     });
+
+    // 重连间隔
+    mqtt.reconnect_interval_millis = 5000;
 
     mqtt.connected_callback = [] {
         Serial.println("MQTT connected");
+        delay(100);
 
         // 发送上线通知
-        const String topic = String("device/basic/online/") + GOIOT_DEVICE_KEY;
         JsonDocument payload;
         payload["mac"] = WiFi.macAddress();
         payload["key"] = GOIOT_DEVICE_KEY;
         payload["secret"] = GOIOT_DEVICE_SECRET;
         String payloadStr;
         serializeJson(payload, payloadStr);
-        mqtt.publish(topic, payloadStr);
+        mqtt.publish(String("device/basic/online/") + GOIOT_DEVICE_KEY, payloadStr, 2);
+    };
+
+    mqtt.disconnected_callback = [] {
+        Serial.println("MQTT disconnected");
     };
 
     mqtt.begin();
 
+    delay(500);
 }
 
 // 上次心跳发送时间
@@ -45,12 +54,14 @@ void mqttLoop() {
 
     mqtt.loop();
 
-    unsigned long millisVal = millis();
-    // 发送心跳
-    if (millisVal - lastHeartbeat > GOIOT_MQTT_HEARTBEAT_INTERVAL || lastHeartbeat / 2 > millisVal) {
-        lastHeartbeat = millisVal;
-        const String topic = String("device/basic/ping/") + GOIOT_DEVICE_KEY;
-        mqtt.publish(topic, String(lastHeartbeat));
+    if(mqtt.connected()) {
+        unsigned long millisVal = millis();
+        // 发送心跳
+        if (millisVal - lastHeartbeat > GOIOT_MQTT_HEARTBEAT_INTERVAL || lastHeartbeat / 2 > millisVal) {
+            lastHeartbeat = millisVal;
+            const String topic = String("device/basic/ping/") + GOIOT_DEVICE_KEY;
+            mqtt.publish(topic, String(lastHeartbeat));
+        }
     }
 }
 

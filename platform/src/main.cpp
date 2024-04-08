@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "config/config.h"
 #include "mqtt/mqtt.h"
 
 void setup() {
@@ -19,5 +20,4 @@ void setup() {
 
 void loop() {
     mqttLoop();
-
 }
